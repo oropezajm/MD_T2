@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lógica Proposicional en TI - Guía Universitaria</title>
+    <!-- Tailwind CSS para diseño moderno y responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos de alta calidad -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX para renderizado rápido y elegante de ecuaciones lógicas y matemáticas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+    <!-- Configuración personalizada de Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#b9defe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .katex { font-size: 1.1em; }
+        .tab-active {
+            border-color: #2563eb;
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+    <!-- Navegación y Encabezado Superior -->
+    <header class="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/10 bg-white/80 dark:bg-slate-900/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-brand-600 text-white p-2 rounded-lg shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-brain-circuit text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent dark:from-brand-500">LogicaTI</span>
+                        <span class="text-xs block text-slate-500 dark:text-slate-400">Matemáticas Discretas I</span>
+                    </div>
+                </div>
+                <!-- Menú de Escritorio -->
+                <nav class="hidden md:flex space-x-1">
+                    <a href="#introduccion" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">Introducción</a>
+                    <a href="#proposiciones" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">Proposiciones</a>
+                    <a href="#implicacion" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">Implicación</a>
+                    <a href="#tablas" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition">Tablas de Verdad</a>
+                    <a href="#cuestionarios" class="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 shadow-md shadow-brand-600/10 transition ml-2">Cuestionarios</a>
+                </nav>
+                <!-- Controladores de Tema y Menú -->
+                <div class="flex items-center gap-2">
+                    <button id="themeToggle" class="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                    </button>
+                    <button class="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg dark:hover:bg-slate-800" onclick="toggleMobileMenu()">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Menú en Pantalla de Celulares -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-1">
+            <a href="#introduccion" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Introducción</a>
+            <a href="#proposiciones" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Proposiciones</a>
+            <a href="#implicacion" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Implicación</a>
+            <a href="#tablas" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Tablas de Verdad</a>
+            <a href="#cuestionarios" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-base font-semibold text-brand-600 dark:text-brand-400">Cuestionarios</a>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal de Secciones -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Banner de Bienvenida y Presentación -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-brand-950 text-white p-8 md:p-12 shadow-xl shadow-indigo-950/20">
+            <div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            <div class="relative z-10 max-w-3xl">
+                <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 mb-4">
+                    <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
+                    Ejemplos Académicos de Textos Universitarios (Rosen y Epp)
+                </span>
+                <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+                    Guía de Lógica Proposicional y <span class="bg-gradient-to-r from-brand-400 to-indigo-300 bg-clip-text text-transparent">Matemáticas Discretas</span>
+                </h1>
+                <p class="text-slate-300 text-base md:text-lg mb-6 leading-relaxed">
+                    Aprende las estructuras lógicas abstractas que definen la ciencia de la computación mediante ejemplos matemáticos rigurosos de libros de texto post-2020.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#introduccion" class="bg-brand-600 hover:bg-brand-500 text-white font-medium px-6 py-3 rounded-xl shadow-lg shadow-brand-600/25 transition">Comenzar Lectura</a>
+                    <a href="#simulador" class="bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-medium px-6 py-3 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-microchip"></i> Probar Simuladores
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 1: INTRODUCCIÓN Y RESUMEN ACADÉMICO -->
+        <section id="introduccion" class="scroll-mt-20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400">
+                    <i class="fa-solid fa-book-bookmark text-xl"></i>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Investigación Académica (Post-2020)</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">Introducción a las Proposiciones en TI</h2>
+                
+                <div class="prose prose-slate dark:prose-invert max-w-none text-justify space-y-4">
+                    <p class="leading-relaxed text-sm md:text-base">
+                        En la era de la computación cuántica, el desarrollo ágil de software y la inteligencia artificial, la <strong>lógica proposicional</strong> sigue siendo el núcleo unificador más potente de las Tecnologías de la Información (TI). Libros universitarios de referencia actuales como <em>Discrete Mathematics and its Applications</em> (Rosen, 2021) y <em>Discrete Mathematics with Applications</em> (Epp, 2020) sitúan a la lógica matemática no solo como una herramienta teórica, sino como la infraestructura indispensable sobre la cual opera el hardware moderno y el código que rige los sistemas automatizados globales.
+                    </p>
+                    <p class="leading-relaxed text-sm md:text-base">
+                        Desde la perspectiva del diseño físico, la equivalencia formal entre las conectivas proposicionales y las compuertas lógicas (AND, OR, NOT) define la construcción de microprocesadores. A nivel de software, las decisiones complejas en la programación estructurada y orientada a objetos descansan sobre la evaluación sistemática de enunciados lógicos booleanos. Asimismo, en sistemas de bases de datos relacionales, la optimización de consultas SQL complejas requiere la aplicación directa de leyes lógicas, como las leyes de De Morgan, para reducir el costo computacional de búsquedas masivas.
+                    </p>
+                    <p class="leading-relaxed text-sm md:text-base">
+                        Para el estudiante de TI, dominar la abstracción de las proposiciones representa la diferencia entre escribir código improvisado o estructurar algoritmos matemáticamente eficientes y autoverificables. Comprender el rigor deductivo permite prever errores semánticos críticos en sistemas de concurrencia y facilita la incursión en disciplinas de vanguardia como la ciberseguridad, donde los protocolos de cifrado y el análisis formal de vulnerabilidades dependen directamente de la rigurosa veracidad de los argumentos proposicionales evaluados matemáticamente.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Columna Lateral: Fichas de Aplicación -->
+            <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-slate-100">
+                    <i class="fa-solid fa-layer-group text-brand-500"></i>
+                    Aplicaciones Críticas en TI (Post-2020)
+                </h3>
+                
+                <div class="space-y-4">
+                    <div class="flex gap-4 items-start p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition">
+                        <div class="bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 p-2.5 rounded-lg">
+                            <i class="fa-solid fa-microchip text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm">Hardware y Circuitos</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Implementación de la lógica proposicional clásica mediante compuertas lógicas físicas integradas en transistores de silicio.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 items-start p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition">
+                        <div class="bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 p-2.5 rounded-lg">
+                            <i class="fa-solid fa-code text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm">Flujos de Control Algorítmicos</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Estructuración limpia de sentencias condicionales (if/else), reduciendo la complejidad ciclomática del código.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 items-start p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition">
+                        <div class="bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 p-2.5 rounded-lg">
+                            <i class="fa-solid fa-database text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm">Consultas SQL</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Optimización de expresiones booleanas complejas en la cláusula WHERE para acelerar la velocidad de consulta.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 dark:border-slate-800 pt-4 text-center">
+                    <span class="text-xs text-slate-400 dark:text-slate-500 block italic">Referencia recomendada:</span>
+                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 block">Kenneth H. Rosen, Discrete Mathematics & Applications, 8va Ed. (2021)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: PROPOSICIONES Y OPERADORES LÓGICOS (Ejemplos Académicos) -->
+        <section id="proposiciones" class="scroll-mt-20 space-y-8">
+            <div class="border-t border-slate-200 dark:border-slate-800 pt-8">
+                <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 mb-2">
+                    <i class="fa-solid fa-circle-nodes text-xl"></i>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Concepto Base y Ejemplos de Libros</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">Proposiciones y Operadores Básicos</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Una <span class="italic font-semibold text-slate-700 dark:text-slate-300">proposición</span> es un enunciado declarativo que puede calificar únicamente como verdadero o falso, pero no ambos.
+                </p>
+            </div>
+
+            <!-- Ejemplos Visuales Rigurosos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Proposiciones Válidas de Texto -->
+                <div class="bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6">
+                    <h3 class="text-emerald-700 dark:text-emerald-400 font-semibold mb-4 flex items-center gap-2 text-lg">
+                        <i class="fa-solid fa-circle-check text-xl"></i> Proposiciones Matemáticas Válidas
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-emerald-500/10 shadow-sm">
+                            <span class="font-mono text-emerald-600 font-bold">p:</span> "La raíz cuadrada de 2 es un número irracional."
+                            <span class="block text-xs text-slate-400 mt-1">Valor lógico: Verdadero (1) [Teorema de Euclides]</span>
+                        </li>
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-emerald-500/10 shadow-sm">
+                            <span class="font-mono text-emerald-600 font-bold">q:</span> "$3 + 5 = 10$"
+                            <span class="block text-xs text-slate-400 mt-1">Valor lógico: Falso (0) [Aritmética básica]</span>
+                        </li>
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-emerald-500/10 shadow-sm">
+                            <span class="font-mono text-emerald-600 font-bold">r:</span> "$2^{10} = 1024$"
+                            <span class="block text-xs text-slate-400 mt-1">Valor lógico: Verdadero (1) [Potencia binaria]</span>
+                        </li>
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-emerald-500/10 shadow-sm">
+                            <span class="font-mono text-emerald-600 font-bold">s:</span> "El número 17 es primo."
+                            <span class="block text-xs text-slate-400 mt-1">Valor lógico: Verdadero (1) [Divisibilidad]</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Expresiones No Válidas de Texto -->
+                <div class="bg-rose-500/5 dark:bg-rose-500/10 border border-rose-500/20 rounded-2xl p-6">
+                    <h3 class="text-rose-700 dark:text-rose-400 font-semibold mb-4 flex items-center gap-2 text-lg">
+                        <i class="fa-solid fa-circle-xmark text-xl"></i> Expresiones que NO son Proposiciones
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-rose-500/10 shadow-sm">
+                            <span class="font-mono text-rose-500 font-bold">x + 2 = 5</span>
+                            <span class="block text-xs text-slate-400 mt-1">Es un enunciado abierto (o predicado). No tiene valor de verdad definido hasta dar un valor a x.</span>
+                        </li>
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-rose-500/10 shadow-sm">
+                            <span class="font-semibold text-rose-500">"Escribe un algoritmo en Python."</span>
+                            <span class="block text-xs text-slate-400 mt-1">Es una instrucción imperativa (orden), no declara ningún hecho.</span>
+                        </li>
+                        <li class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-rose-500/10 shadow-sm">
+                            <span class="font-semibold text-rose-500">"¿Es 17 un número primo?"</span>
+                            <span class="block text-xs text-slate-400 mt-1">Es una pregunta interrogativa, no posee valor de verdad asignable.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tarjetas de Operadores Lógicos Básicos (Rosen/Epp) -->
+            <h3 class="text-xl font-bold flex items-center gap-2 mt-8 text-slate-800 dark:text-slate-100">
+                <i class="fa-solid fa-sliders text-brand-500"></i>
+                Operadores Lógicos Básicos Reescritos
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- NEGACIÓN -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300">Negación</span>
+                            <span class="text-xl font-bold font-mono text-indigo-500"><span class="latex-math" data-expr="\neg"></span> o <span class="latex-math" data-expr="\sim"></span></span>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                            Modifica un enunciado al valor opuesto de su estado lógico original de veracidad.
+                        </p>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-100 dark:border-slate-900 text-xs space-y-2 font-mono">
+                            <div><span class="text-indigo-500">p:</span> "La raíz de 2 es irracional" (1)</div>
+                            <div><span class="text-pink-500">¬p:</span> "La raíz de 2 no es irracional" (0)</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                        <span>Compuerta:</span>
+                        <span class="font-bold text-indigo-600">NOT</span>
+                    </div>
+                </div>
+
+                <!-- CONJUNCIÓN -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300">Conjunción</span>
+                            <span class="text-xl font-bold font-mono text-sky-500"><span class="latex-math" data-expr="\wedge"></span></span>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                            Resulta verdadera estrictamente si ambos operandos individuales resultan simultáneamente verdaderos.
+                        </p>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-100 dark:border-slate-900 text-xs space-y-2 font-mono">
+                            <div><span class="text-sky-500">p:</span> "El número 2 es primo par" (1)</div>
+                            <div><span class="text-sky-500">q:</span> "El oro es un metal conductor" (1)</div>
+                            <div class="border-t border-dashed border-slate-200 dark:border-slate-800 pt-1 text-slate-500">
+                                <span class="text-sky-600 font-bold">p ∧ q:</span> "El 2 es primo par y el oro es conductor" (1)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                        <span>Compuerta:</span>
+                        <span class="font-bold text-sky-600">AND</span>
+                    </div>
+                </div>
+
+                <!-- DISYUNCIÓN -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300">Disyunción</span>
+                            <span class="text-xl font-bold font-mono text-teal-500"><span class="latex-math" data-expr="\vee"></span></span>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                            Es verdadera si por lo menos uno de los términos declarados resulta verdadero. Falsa solo si ambos fallan.
+                        </p>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-100 dark:border-slate-900 text-xs space-y-2 font-mono">
+                            <div><span class="text-teal-500">p:</span> "El Sol gira alrededor de la Tierra" (0)</div>
+                            <div><span class="text-teal-500">q:</span> "El oxígeno es necesario para la combustión" (1)</div>
+                            <div class="border-t border-dashed border-slate-200 dark:border-slate-800 pt-1 text-slate-500">
+                                <span class="text-teal-600 font-bold">p ∨ q:</span> "El Sol gira alrededor o el oxígeno combustiona" (1)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                        <span>Compuerta:</span>
+                        <span class="font-bold text-teal-600">OR</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: IMPLICACIÓN Y DOBLE IMPLICACIÓN (Ejemplos de Libros de Texto) -->
+        <section id="implicacion" class="scroll-mt-20 space-y-8">
+            <div class="border-t border-slate-200 dark:border-slate-800 pt-8">
+                <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 mb-2">
+                    <i class="fa-solid fa-right-long text-xl"></i>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Estructuras Condicionales Avanzadas</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">Implicación y Doble Implicación</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Ejemplos clásicos de lógica formal aplicada en enunciados matemáticos y algoritmos informáticos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Implicación o Condicional -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-right text-brand-500"></i>
+                            Implicación Condicional
+                        </h3>
+                        <span class="text-xl font-bold text-brand-500 font-mono"><span class="latex-math" data-expr="p \rightarrow q"></span></span>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed text-justify">
+                        Su valor de verdad será <strong>falso únicamente cuando el antecedente <span class="latex-math" data-expr="p"></span> sea verdadero, pero el consecuente <span class="latex-math" data-expr="q"></span> sea falso</strong>. Si el antecedente es falso, la implicación es considerada verdadera por defecto de manera vacua (<strong>verdad vacua</strong>).
+                    </p>
+                    
+                    <div class="bg-brand-50/50 dark:bg-slate-950 p-4 rounded-2xl border border-brand-100/50 dark:border-slate-900 space-y-2">
+                        <span class="text-xs font-semibold text-brand-600 dark:text-brand-400 uppercase tracking-wider block">Ejemplos Formales de Libros:</span>
+                        <ul class="space-y-2 text-xs md:text-sm text-slate-700 dark:text-slate-300">
+                            <li><i class="fa-solid fa-angle-right text-brand-500 mr-1"></i> "Si un número entero es múltiplo de 4, entonces es múltiplo de 2."</li>
+                            <li><i class="fa-solid fa-angle-right text-brand-500 mr-1"></i> "Si el programa compila sin errores de sintaxis, entonces se genera el archivo ejecutable."</li>
+                            <li><i class="fa-solid fa-angle-right text-brand-500 mr-1"></i> "Si $n$ es un número entero impar, entonces $n^2$ es impar."</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Doble Implicación o Bicondicional -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-left-right text-indigo-500"></i>
+                            Doble Implicación (Bicondicional)
+                        </h3>
+                        <span class="text-xl font-bold text-indigo-500 font-mono"><span class="latex-math" data-expr="p \leftrightarrow q"></span></span>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed text-justify">
+                        Establece que las dos proposiciones ligadas son lógicamente equivalentes. Su valor de verdad es <strong>verdadero únicamente si ambas proposiciones comparten simultáneamente el mismo valor de verdad</strong>.
+                    </p>
+
+                    <div class="bg-indigo-50/50 dark:bg-slate-950 p-4 rounded-2xl border border-indigo-100/50 dark:border-slate-900 space-y-2">
+                        <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Ejemplos de Equivalencia:</span>
+                        <ul class="space-y-2 text-xs md:text-sm text-slate-700 dark:text-slate-300">
+                            <li><i class="fa-solid fa-equals text-indigo-500 mr-1"></i> "Un número entero es par si y solo si es divisible entre 2."</li>
+                            <li><i class="fa-solid fa-equals text-indigo-500 mr-1"></i> "El servidor autoriza la descarga si y solo si el token de sesión es válido."</li>
+                            <li><i class="fa-solid fa-equals text-indigo-500 mr-1"></i> "Un triángulo es equilátero si y solo si tiene tres lados de igual longitud."</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: TABLAS DE VERDAD INTERACTIVAS -->
+        <section id="tablas" class="scroll-mt-20 space-y-8">
+            <div class="border-t border-slate-200 dark:border-slate-800 pt-8">
+                <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 mb-2">
+                    <i class="fa-solid fa-table-list text-xl"></i>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Práctica y Resolución</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">Generación y Análisis de Tablas de Verdad</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Aprende la metodología paso a paso utilizando la notación binaria de clase (<span class="font-bold">1</span> para Verdadero y <span class="font-bold">0</span> para Falso).
+                </p>
+            </div>
+
+            <!-- Simuladores Lógicos Avanzados -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Paneles de Control de los Simuladores -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <!-- Simulador 1: Expresión Principal de Clase -->
+                    <div id="simulador" class="bg-gradient-to-br from-slate-900 to-brand-950 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden border border-brand-500/20">
+                        <h4 class="font-bold text-sm mb-2 flex items-center gap-1.5 text-brand-200">
+                            <i class="fa-solid fa-calculator"></i> Calculador de Renglón 1
+                        </h4>
+                        <p class="text-xs text-brand-200/80 mb-4">Calcula interactivamente la expresión principal: <span class="latex-math" data-expr="(p \vee q) \wedge \neg r"></span></p>
+                        
+                        <div class="space-y-4 text-xs font-mono">
+                            <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-xl border border-white/5">
+                                <span class="font-bold">Variables de entrada:</span>
+                                <div class="flex gap-3 text-sm">
+                                    <label class="flex items-center gap-1 cursor-pointer">
+                                        <span>p:</span>
+                                        <input type="checkbox" id="sim_p" checked class="w-4 h-4 rounded text-brand-600 bg-slate-800 border-slate-700">
+                                    </label>
+                                    <label class="flex items-center gap-1 cursor-pointer">
+                                        <span>q:</span>
+                                        <input type="checkbox" id="sim_q" class="w-4 h-4 rounded text-brand-600 bg-slate-800 border-slate-700">
+                                    </label>
+                                    <label class="flex items-center gap-1 cursor-pointer">
+                                        <span>r:</span>
+                                        <input type="checkbox" id="sim_r" class="w-4 h-4 rounded text-brand-600 bg-slate-800 border-slate-700">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 p-1.5">
+                                <div class="flex justify-between">
+                                    <span>Subexpresión A = p ∨ q:</span>
+                                    <span id="res_A" class="font-bold text-brand-300">1</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Subexpresión B = ¬ r:</span>
+                                    <span id="res_B" class="font-bold text-brand-300">1</span>
+                                </div>
+                                <div class="flex justify-between border-t border-white/10 pt-1.5 font-sans">
+                                    <span class="font-semibold text-brand-200">Resultado Final (A ∧ B):</span>
+                                    <span id="res_Final" class="font-bold bg-brand-500 text-white px-2.5 py-0.5 rounded text-xs">1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulador 2: Ejercicios Propuestos del Material -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                            <i class="fa-solid fa-gears text-purple-500"></i> Calculador de Ejercicios Propuestos
+                        </h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Verifica el resultado de los ejercicios propuestos en el archivo de diapositivas.</p>
+                        
+                        <div class="space-y-3 font-mono text-xs">
+                            <div class="p-2.5 bg-slate-50 dark:bg-slate-950 rounded-xl space-y-1">
+                                <div class="flex justify-between text-slate-500">
+                                    <span>a) q ∨ (¬r → p)</span>
+                                    <span id="ej_a" class="font-bold text-brand-600 dark:text-brand-400">0</span>
+                                </div>
+                            </div>
+                            <div class="p-2.5 bg-slate-50 dark:bg-slate-950 rounded-xl space-y-1">
+                                <div class="flex justify-between text-slate-500">
+                                    <span>b) p ∨ (q ∧ r)</span>
+                                    <span id="ej_b" class="font-bold text-brand-600 dark:text-brand-400">0</span>
+                                </div>
+                            </div>
+                            <div class="p-2.5 bg-slate-50 dark:bg-slate-950 rounded-xl space-y-1">
+                                <div class="flex justify-between text-slate-500">
+                                    <span>c) (p ∨ q) ∧ r</span>
+                                    <span id="ej_c" class="font-bold text-brand-600 dark:text-brand-400">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulador 3: Evaluación de Predicados Enteros -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-down-1-9 text-emerald-500"></i> Evaluador de Predicados (x Entero)
+                        </h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Nuevos Predicados: <span class="font-bold">p(x): x es un número primo</span> y <span class="font-bold">q(x): x² < 20</span>.</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-950 p-2.5 rounded-xl border border-slate-100 dark:border-slate-900">
+                                <label for="pred_x" class="text-xs font-mono font-bold">Valor de x:</label>
+                                <input type="number" id="pred_x" value="3" class="w-20 px-2 py-1 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg font-mono focus:ring-1 focus:ring-brand-500">
+                            </div>
+
+                            <div class="font-mono text-xs space-y-1.5 p-1">
+                                <div class="flex justify-between">
+                                    <span>p(x) : x es primo</span>
+                                    <span id="pred_p_val" class="font-bold text-slate-700 dark:text-slate-300">1</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>q(x) : x² < 20</span>
+                                    <span id="pred_q_val" class="font-bold text-slate-700 dark:text-slate-300">1</span>
+                                </div>
+                                <div class="flex justify-between border-t border-slate-200 dark:border-slate-800 pt-1.5 font-sans">
+                                    <span class="font-semibold">Resultado de p ∧ q:</span>
+                                    <span id="pred_res_val" class="font-bold bg-emerald-500 text-white px-2 py-0.5 rounded text-[10px]">VERDADERO (1)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tabla de Verdad de la Expresión Principal -->
+                <div class="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm overflow-hidden">
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-table text-indigo-500"></i>
+                            Tabla de Verdad: <span class="latex-math" data-expr="(p \vee q) \wedge \neg r"></span>
+                        </span>
+                        <span class="text-[10px] font-normal text-slate-400">Señalando fila activa en el simulador</span>
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-center border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase border-b border-slate-200 dark:border-slate-800">
+                                    <th class="py-3 px-3">p</th>
+                                    <th class="py-3 px-3">q</th>
+                                    <th class="py-3 px-3">r</th>
+                                    <th class="py-3 px-3 bg-brand-500/5 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 font-bold">A = p v q</th>
+                                    <th class="py-3 px-3 bg-purple-500/5 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold">B = ¬ r</th>
+                                    <th class="py-3 px-3 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 font-bold">Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs font-mono divide-y divide-slate-100 dark:divide-slate-800">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="000">
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">0</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">1</td>
+                                    <td class="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">0</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="001">
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">0</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">0</td>
+                                    <td class="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">0</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="010">
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">1</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">1</td>
+                                    <td class="py-2.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">1</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="011">
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">1</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">0</td>
+                                    <td class="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">0</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="100">
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">1</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">1</td>
+                                    <td class="py-2.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">1</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="101">
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">1</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">0</td>
+                                    <td class="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">0</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="110">
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">0</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">1</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">1</td>
+                                    <td class="py-2.5 px-3 font-bold text-emerald-600 dark:text-emerald-400">1</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150" data-row="111">
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3">1</td>
+                                    <td class="py-2.5 px-3 bg-brand-500/5 dark:bg-brand-500/10">1</td>
+                                    <td class="py-2.5 px-3 bg-purple-500/5 dark:bg-purple-500/10">0</td>
+                                    <td class="py-2.5 px-3 font-bold text-rose-600 dark:text-rose-400">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CUESTIONARIOS INTERACTIVOS (5 preguntas por apartado) -->
+        <section id="cuestionarios" class="scroll-mt-20 space-y-8">
+            <div class="border-t border-slate-200 dark:border-slate-800 pt-8">
+                <div class="flex items-center gap-2 text-brand-600 dark:text-brand-400 mb-2">
+                    <i class="fa-solid fa-square-question text-xl"></i>
+                    <span class="text-sm font-semibold uppercase tracking-wider">Verificación de Conocimiento</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold">Cuestionarios de Autoevaluación</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Pon a prueba tus conocimientos en cada una de las cuatro secciones utilizando los nuevos ejemplos de los libros de texto de Rosen y Epp.
+                </p>
+            </div>
+
+            <!-- Selector de Cuestionario Activo -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="quizTabs">
+                <button onclick="switchQuiz(1)" id="tab-1" class="quiz-tab-btn tab-active p-4 rounded-2xl shadow-sm text-left border border-brand-500 transition-all">
+                    <span class="text-[10px] opacity-80 block mb-1 font-semibold uppercase">Apartado 1</span>
+                    <span class="font-bold text-xs md:text-sm block">Importancia de la Lógica en TI</span>
+                </button>
+                <button onclick="switchQuiz(2)" id="tab-2" class="quiz-tab-btn bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 p-4 rounded-2xl shadow-sm text-left border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                    <span class="text-[10px] text-slate-400 block mb-1 font-semibold uppercase">Apartado 2</span>
+                    <span class="font-bold text-xs md:text-sm block">Proposiciones y Operadores</span>
+                </button>
+                <button onclick="switchQuiz(3)" id="tab-3" class="quiz-tab-btn bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 p-4 rounded-2xl shadow-sm text-left border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                    <span class="text-[10px] text-slate-400 block mb-1 font-semibold uppercase">Apartado 3</span>
+                    <span class="font-bold text-xs md:text-sm block">Implicación y Bicondicional</span>
+                </button>
+                <button onclick="switchQuiz(4)" id="tab-4" class="quiz-tab-btn bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 p-4 rounded-2xl shadow-sm text-left border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                    <span class="text-[10px] text-slate-400 block mb-1 font-semibold uppercase">Apartado 4</span>
+                    <span class="font-bold text-xs md:text-sm block">Análisis de Tablas de Verdad</span>
+                </button>
+            </div>
+
+            <!-- Panel de Cuestionario Activo -->
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-sm">
+                
+                <!-- Cabecera del Progreso del Cuestionario -->
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                        <h3 id="activeQuizTitle" class="text-base md:text-xl font-bold">Importancia de la Lógica en TI</h3>
+                        <p id="activeQuizDesc" class="text-xs text-slate-400 mt-1">Preguntas de nivel universitario basadas en literatura y aplicaciones de vanguardia post-2020.</p>
+                    </div>
+                    <div class="text-right min-w-[100px]">
+                        <span id="quizProgress" class="text-xs font-semibold text-brand-600 dark:text-brand-400">Respondido: 0/5</span>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
+                            <div id="quizProgressBar" class="bg-brand-600 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor Dinámico para las Preguntas del Cuestionario -->
+                <div id="quizQuestionsContainer" class="space-y-8">
+                    <!-- Cargadas mediante script -->
+                </div>
+
+                <!-- Panel de Resultado Global -->
+                <div id="quizResultPanel" class="hidden mt-8 p-6 bg-brand-500/5 dark:bg-brand-500/10 border border-brand-500/20 rounded-2xl text-center space-y-4">
+                    <div class="text-4xl">🎉</div>
+                    <h4 class="text-lg font-bold">¡Has completado el cuestionario de este apartado!</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Puntuación obtenida: <span id="finalScore" class="font-bold text-lg text-brand-600 dark:text-brand-400">0</span> de un máximo de 5 puntos.</p>
+                    <button onclick="resetActiveQuiz()" class="bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs py-2.5 px-5 rounded-xl transition shadow-md shadow-brand-500/10">Reiniciar Cuestionario</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="bg-brand-600 text-white p-1.5 rounded-lg">
+                    <i class="fa-solid fa-brain-circuit"></i>
+                </div>
+                <span class="font-bold text-white">LogicaTI - Guía Universitaria</span>
+            </div>
+            <p class="text-xs text-slate-500">&copy; 2026 Curso de Matemáticas Discretas I - Especialidad en Tecnologías de la Información.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts de Funcionalidad Interactiva -->
+    <script>
+        // --- 1. CONFIGURACIÓN DEL TEMA OSCURO/CLARO ---
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = 'fa-solid fa-sun text-lg';
+        } else {
+            document.documentElement.classList.remove('dark');
+            themeIcon.className = 'fa-solid fa-moon text-lg';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                themeIcon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                themeIcon.className = 'fa-solid fa-sun text-lg';
+            }
+        });
+
+        // Toggle del Menú Móvil
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- 2. RENDERIZACIÓN DE EXPRESIONES LATEX (KaTeX) ---
+        function renderMath() {
+            document.querySelectorAll('.latex-math').forEach(element => {
+                const expr = element.getAttribute('data-expr');
+                if (expr) {
+                    try {
+                        katex.render(expr, element, { throwOnError: false });
+                    } catch (err) {
+                        console.error("Error al renderizar KaTeX:", err);
+                    }
+                }
+            });
+        }
+        window.addEventListener('DOMContentLoaded', renderMath);
+
+        // --- Función helper para verificar si un entero positivo es primo ---
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num <= 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
+        // --- 3. IMPLEMENTACIÓN DE SIMULADORES LÓGICOS ---
+        const simP = document.getElementById('sim_p');
+        const simQ = document.getElementById('sim_q');
+        const simR = document.getElementById('sim_r');
+        const predX = document.getElementById('pred_x');
+
+        function updateAllSimulators() {
+            // Valores de entrada booleanos (1 o 0)
+            const p = simP.checked ? 1 : 0;
+            const q = simQ.checked ? 1 : 0;
+            const r = simR.checked ? 1 : 0;
+
+            // Simulador 1: Expresión de clase (p v q) ^ ¬r
+            const A = (p || q) ? 1 : 0;
+            const B = (!r) ? 1 : 0;
+            const finalResult = (A && B) ? 1 : 0;
+
+            document.getElementById('res_A').textContent = A;
+            document.getElementById('res_B').textContent = B;
+            document.getElementById('res_Final').textContent = finalResult;
+
+            // Clases de Tailwind dinámicas para el resultado final
+            if (finalResult === 1) {
+                document.getElementById('res_Final').className = "font-bold bg-emerald-500 text-white px-2.5 py-0.5 rounded text-xs";
+            } else {
+                document.getElementById('res_Final').className = "font-bold bg-rose-500 text-white px-2.5 py-0.5 rounded text-xs";
+            }
+
+            // Resaltar renglón correspondiente en la tabla física
+            const rowCode = `${p}${q}${r}`;
+            document.querySelectorAll('tbody tr').forEach(row => {
+                if (row.getAttribute('data-row') === rowCode) {
+                    row.className = "bg-brand-500/15 border-l-4 border-brand-500 font-bold transition-all duration-200 dark:bg-brand-500/20";
+                } else {
+                    row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all duration-150";
+                }
+            });
+
+            // Simulador 2: Ejercicios alternativos propuestos
+            // a) q v (¬r -> p)
+            const impl_r_p = (!r || p) ? 1 : 0; // ¬r -> p
+            const res_a = (q || impl_r_p) ? 1 : 0;
+            document.getElementById('ej_a').textContent = res_a;
+            document.getElementById('ej_a').className = res_a === 1 ? "font-bold text-emerald-600 dark:text-emerald-400" : "font-bold text-rose-500 dark:text-rose-400";
+
+            // b) p v (q ^ r)
+            const res_b = (p || (q && r)) ? 1 : 0;
+            document.getElementById('ej_b').textContent = res_b;
+            document.getElementById('ej_b').className = res_b === 1 ? "font-bold text-emerald-600 dark:text-emerald-400" : "font-bold text-rose-500 dark:text-rose-400";
+
+            // c) (p v q) ^ r
+            const res_c = ((p || q) && r) ? 1 : 0;
+            document.getElementById('ej_c').textContent = res_c;
+            document.getElementById('ej_c').className = res_c === 1 ? "font-bold text-emerald-600 dark:text-emerald-400" : "font-bold text-rose-500 dark:text-rose-400";
+
+            // Simulador 3: Predicados de Teoría de Números (Ejemplos actualizados)
+            const x = parseInt(predX.value) || 0;
+            const px_val = isPrime(x) ? 1 : 0;
+            const qx_val = (x * x < 20) ? 1 : 0;
+            const and_pred = (px_val && qx_val) ? 1 : 0;
+
+            document.getElementById('pred_p_val').textContent = px_val;
+            document.getElementById('pred_q_val').textContent = qx_val;
+            
+            const predResElement = document.getElementById('pred_res_val');
+            if (and_pred === 1) {
+                predResElement.textContent = "VERDADERO (1)";
+                predResElement.className = "font-bold bg-emerald-500 text-white px-2 py-0.5 rounded text-[10px]";
+            } else {
+                predResElement.textContent = "FALSO (0)";
+                predResElement.className = "font-bold bg-rose-500 text-white px-2 py-0.5 rounded text-[10px]";
+            }
+        }
+
+        // Listeners para actualizar simuladores de inmediato
+        simP.addEventListener('change', updateAllSimulators);
+        simQ.addEventListener('change', updateAllSimulators);
+        simR.addEventListener('change', updateAllSimulators);
+        predX.addEventListener('input', updateAllSimulators);
+        window.addEventListener('load', updateAllSimulators);
+
+        // --- 4. DATA Y LÓGICA DE CUESTIONARIOS ACTUALIZADOS (Ejemplos Rosen y Epp) ---
+        const quizzes = {
+            1: {
+                title: "Apartado 1: Importancia de la Lógica en TI",
+                desc: "Evaluación sobre literatura y aplicaciones de lógica matemática en sistemas e infraestructura de TI (Rosen 2021, Epp 2020).",
+                questions: [
+                    {
+                        q: "¿Cuál es el núcleo unificador más directo de la lógica de proposiciones en la arquitectura física de computadores?",
+                        options: [
+                            "Los buses de conectividad PCI Express.",
+                            "Las compuertas lógicas (AND, OR, NOT) que componen la lógica de circuitos en los procesadores.",
+                            "Los protocolos de direccionamiento IP.",
+                            "La modulación por ancho de pulsos de la fuente de alimentación."
+                        ],
+                        correct: 1,
+                        explanation: "La lógica de circuitos en microprocesadores es una traducción física directa de la lógica proposicional clásica (donde AND, OR y NOT gobiernan el flujo eléctrico de los transistores)."
+                    },
+                    {
+                        q: "Al optimizar consultas SQL complejas en bases de datos relacionales, ¿qué papel juegan las leyes lógicas?",
+                        options: [
+                            "Determinan el espacio físico en disco para las tablas.",
+                            "Se aplican equivalencias formales (como leyes de De Morgan) para reducir y agilizar filtros en la cláusula WHERE.",
+                            "Reemplazan el uso de llaves primarias en la estructura de base de datos.",
+                            "Permiten traducir el lenguaje SQL de forma nativa a lenguaje máquina sin compilador."
+                        ],
+                        correct: 1,
+                        explanation: "Reducir sentencias lógicas complejas mediante álgebra proposicional optimiza el procesamiento del compilador SQL, disminuyendo el costo computacional de búsquedas indexadas masivas."
+                    },
+                    {
+                        q: "¿Cuál es la principal ventaja algorítmica para un estudiante universitario de TI de comprender la lógica formal según Rosen (2021)?",
+                        options: [
+                            "Permite prescindir del uso de lenguajes de programación modernos.",
+                            "Asegura la capacidad de estructurar de forma eficiente flujos de control condicionales (if/else) complejos y robustos.",
+                            "Aumenta de manera automática el ancho de banda del servidor de desarrollo.",
+                            "Facilita la estilización gráfica de páginas web utilizando selectores CSS avanzados."
+                        ],
+                        correct: 1,
+                        explanation: "Dominar la abstracción de enunciados compuestos entrena al programador para evitar errores lógicos semánticos (como loops infinitos o condiciones inalcanzables) en el flujo de control de un algoritmo."
+                    },
+                    {
+                        q: "¿Qué aplicación avanzada tiene la lógica proposicional en el ámbito de la Ciberseguridad?",
+                        options: [
+                            "Sustituye físicamente los cortafuegos y el hardware de red.",
+                            "Se utiliza en la verificación formal de protocolos de seguridad y cifrados criptográficos para demostrar matemáticamente que son inviolables.",
+                            "Permite generar contraseñas seguras compuestas únicamente de operadores algebraicos.",
+                            "Garantiza que la conexión de red inalámbrica nunca sufra de interferencias físicas."
+                        ],
+                        correct: 1,
+                        explanation: "La verificación formal matemática utiliza lógica formal rigurosa para auditar y probar que la especificación y comportamiento de un sistema criptográfico es 100% inmune a ciertas fallas de seguridad estructurada."
+                    },
+                    {
+                        q: "¿Cómo se utiliza la lógica de enunciados en la Inteligencia Artificial simbólica clásica?",
+                        options: [
+                            "A través de algoritmos puramente gráficos de animación 3D.",
+                            "Es la base para modelar bases de conocimiento, ontologías y motores lógicos de deducción de reglas en sistemas expertos.",
+                            "Mediante el ajuste manual y empírico de las velocidades de renderizado.",
+                            "Únicamente se utiliza para administrar la memoria dinámica del sistema operativo."
+                        ],
+                        correct: 1,
+                        explanation: "La Inteligencia Artificial clásica (simbólica) utiliza la lógica proposicional y de primer orden para formalizar hechos del mundo real en una base de datos y permitir que un motor de inferencia deduzca soluciones."
+                    }
+                ]
+            },
+            2: {
+                title: "Apartado 2: Proposiciones y Operadores Básicos",
+                desc: "Evaluación basada en los nuevos ejemplos matemáticos y formales extraídos de los libros de texto.",
+                questions: [
+                    {
+                        q: "¿Cuál de los siguientes enunciados representa una proposición lógica válida según los textos de Rosen y Epp?",
+                        options: [
+                            "\"Escribe un algoritmo en Python.\"",
+                            "\"La raíz cuadrada de 2 es un número irracional.\"",
+                            "\"x + 2 = 5\"",
+                            "\"¿Es 17 un número primo?\""
+                        ],
+                        correct: 1,
+                        explanation: "Un enunciado imperativo (orden), una ecuación abierta sin dominio definido (x+2=5) y una pregunta no tienen un valor de verdad unívoco. 'La raíz de 2 es irracional' es declarativo y verdadero."
+                    },
+                    {
+                        q: "Dada la proposición matemática simple s: 'El número 17 es primo'. ¿Cuál es su negación formal (¬s)?",
+                        options: [
+                            "¬s: \"El número 17 no es primo.\"",
+                            "¬s: \"El número 17 es par e impar.\"",
+                            "¬s: \"El número 17 es divisible por 3.\"",
+                            "¬s: \"El número 17 es un entero compuesto.\""
+                        ],
+                        correct: 0,
+                        explanation: "La negación lógica de una afirmación se construye simplemente añadiendo la partícula de negación al verbo principal: 'El número 17 no es primo'."
+                    },
+                    {
+                        q: "Sean p: 'El número 2 es primo par' y q: 'El oro es un metal conductor'. Si ambos enunciados individuales son verdaderos (1), ¿cuál es el valor de verdad de la conjunción p ∧ q?",
+                        options: [
+                            "Falso (0), porque se contradicen físicamente.",
+                            "Verdadero (1), porque ambos operandos constituyentes son verdaderos simultáneamente.",
+                            "Indeterminado.",
+                            "Falso por verdad vacua."
+                        ],
+                        correct: 1,
+                        explanation: "De acuerdo con la definición matemática del operador AND (∧), si p es verdadero (1) y q es verdadero (1), la conjunción resulta verdadera (1)."
+                    },
+                    {
+                        q: "Sean p: 'El Sol gira alrededor de la Tierra' (Falso) y q: 'El oxígeno es necesario para la combustión' (Verdadero). ¿Cuál es el valor lógico de la disyunción p ∨ q?",
+                        options: [
+                            "Falso (0), porque el Sol no gira alrededor de la Tierra.",
+                            "Verdadero (1), porque al menos uno de los enunciados (q) es verdadero.",
+                            "Falso (0), porque ambos tendrían que ser verdaderos.",
+                            "Verdadero por equivalencia tautológica."
+                        ],
+                        correct: 1,
+                        explanation: "La disyunción inclusiva (∨) requiere únicamente que al menos una de las proposiciones involucradas sea verdadera para que la expresión completa sea verdadera (0 ∨ 1 = 1)."
+                    },
+                    {
+                        q: "¿Por qué la expresión matemática 'x + 2 = 5' no se considera una proposición lógica formal?",
+                        options: [
+                            "Porque no tiene operadores lógicos como la conjunción o la negación.",
+                            "Porque es un enunciado abierto (o predicado) cuyo valor de verdad no está definido hasta asignar un valor específico a la variable x.",
+                            "Porque las matemáticas puras no usan lógica.",
+                            "Porque representa un valor siempre infinito."
+                        ],
+                        correct: 1,
+                        explanation: "En los libros de texto, las ecuaciones con variables libres se denominan enunciados abiertos o funciones proposicionales; no son proposiciones directas porque no se puede asignar un valor de verdad absoluto sin un dominio de x."
+                    }
+                ]
+            },
+            3: {
+                title: "Apartado 3: Implicación y Bicondicional",
+                desc: "Examen sobre implicación formal, verdad vacua y precedencia de operadores.",
+                questions: [
+                    {
+                        q: "Dada la implicación condicional de texto: 'Si un número entero es múltiplo de 4, entonces es múltiplo de 2'. ¿Bajo qué única circunstancia matemática este enunciado condicional p → q sería falso?",
+                        options: [
+                            "Si el entero no es múltiplo de 4 y tampoco de 2.",
+                            "Si encontramos un número entero que sea múltiplo de 4, pero que no sea múltiplo de 2.",
+                            "Si el entero no es múltiplo de 4, pero sí es múltiplo de 2.",
+                            "Si el número entero es divisible por ambos."
+                        ],
+                        correct: 1,
+                        explanation: "La condicional p → q es falsa únicamente si el antecedente p es Verdadero (es múltiplo de 4) y el consecuente q es Falso (no es múltiplo de 2)."
+                    },
+                    {
+                        q: "Dada la proposición de implicación p → q, si el antecedente p es una afirmación falsa, ¿cuál es el valor de verdad asignado a la expresión completa según la regla matemática de 'verdad vacua'?",
+                        options: [
+                            "Se asume como falsa (0) de forma automática.",
+                            "Se asume como verdadera (1) de forma vacua.",
+                            "Se declara inválida para su evaluación.",
+                            "Depende exclusivamente de si el consecuente q es verdadero."
+                        ],
+                        correct: 1,
+                        explanation: "Por convención en lógica matemática formal (Rosen 2021), una implicación con antecedente falso es verdadera (verdad vacua), ya que el condicional no se incumple."
+                    },
+                    {
+                        q: "El enunciado bicondicional: 'Un número entero es par si y solo si es divisible entre 2', ¿es una proposición verdadera o falsa?",
+                        options: [
+                            "Falsa, porque los números impares también son divisibles.",
+                            "Verdadera, porque ambas proposiciones simples vinculadas comparten exactamente el mismo valor de verdad para todo entero.",
+                            "Falsa, debido a que el condicional solo viaja en un sentido.",
+                            "Verdadera por verdad vacua."
+                        ],
+                        correct: 1,
+                        explanation: "Un bicondicional (↔) es verdadero si ambos enunciados tienen el mismo valor de verdad. Como un número es par (1) siempre que es divisible entre 2 (1), y no es par (0) cuando no es divisible entre 2 (0), es verdadero."
+                    },
+                    {
+                        q: "Si deseamos evaluar la expresión formal ¬p ∧ q → r sin el uso de paréntesis auxiliares, ¿cuál operador se debe aplicar en último lugar según la precedencia estándar?",
+                        options: [
+                            "La negación (¬)",
+                            "La conjunción (∧)",
+                            "La implicación (→)",
+                            "Todos se evalúan a la vez de izquierda a derecha."
+                        ],
+                        correct: 2,
+                        explanation: "La jerarquía estándar sin paréntesis evalúa primero la negación (¬), luego la conjunción (∧), después la disyunción (∨) y finalmente los operadores condicionales (→) y bicondicionales (↔)."
+                    },
+                    {
+                        q: "Sea x = 5. ¿Cuál es el valor de verdad de la implicación: 'Si x es impar, entonces x² es par'?",
+                        options: [
+                            "Verdadero (1), porque x es impar y x² es impar.",
+                            "Falso (0), porque el antecedente es verdadero (5 es impar), pero el consecuente es falso (25 es par es falso).",
+                            "Verdadero (1) por el concepto de verdad vacua.",
+                            "Falso (0) porque 5² = 25."
+                        ],
+                        correct: 1,
+                        explanation: "El antecedente p: '5 es impar' es Verdadero. El consecuente q: '25 es par' es Falso. Como tenemos 1 → 0, la implicación completa es Falsa (0)."
+                    }
+                ]
+            },
+            4: {
+                title: "Apartado 4: Análisis de Tablas de Verdad",
+                desc: "Evaluación práctica sobre construcción de tablas y predicados matemáticos algebraicos.",
+                questions: [
+                    {
+                        q: "Al evaluar la expresión principal de clase (p ∨ q) ∧ ¬r para la fila de verdad donde p = 0, q = 1 y r = 0, ¿cuál es el resultado final?",
+                        options: [
+                            "Resultado final = 0 (Falso)",
+                            "Resultado final = 1 (Verdadero)",
+                            "Indeterminado",
+                            "Es una contradicción directa."
+                        ],
+                        correct: 1,
+                        explanation: "p ∨ q es 0 ∨ 1 = 1. ¬r es ¬0 = 1. Al evaluar la conjunción final: 1 ∧ 1 = 1 (Verdadero)."
+                    },
+                    {
+                        q: "Para evaluar en el simulador los predicados numéricos p(x): 'x es un número primo' y q(x): 'x² < 20', si asignamos x = 3 entero, ¿qué valor lógico final se obtiene para p(3) ∧ q(3)?",
+                        options: [
+                            "Falso (0), porque 3 no es un número primo.",
+                            "Verdadero (1), porque 3 es primo (1) y 3² = 9 es menor que 20 (1).",
+                            "Falso (0), porque 3² es impar.",
+                            "Verdadero (1) de forma vacua."
+                        ],
+                        correct: 1,
+                        explanation: "3 es un número primo, por lo que p(3) es Verdadero (1). Además, 3² = 9 < 20 es Verdadero (1). La conjunción 1 ∧ 1 resulta en un valor lógico Verdadero (1)."
+                    },
+                    {
+                        q: "Si en el mismo simulador de predicados asignamos x = 5 entero, ¿por qué el resultado de p(5) ∧ q(5) es Falso (0)?",
+                        options: [
+                            "Porque 5 no es un número primo.",
+                            "Porque aunque 5 es primo (1), su cuadrado (5² = 25) no es menor que 20 (0).",
+                            "Porque 5 es un número entero compuesto.",
+                            "Porque se incumple la regla del condicional."
+                        ],
+                        correct: 1,
+                        explanation: "Para x = 5: p(5) es Verdadero (1). Sin embargo, q(5): '25 < 20' es Falso (0). Al realizar la conjunción 1 ∧ 0, el resultado final es Falso (0)."
+                    },
+                    {
+                        q: "¿Qué se requiere para demostrar formalmente que una expresión lógica proposicional compuesta es una Contradicción?",
+                        options: [
+                            "Que la columna de resultado final en su tabla de verdad sea completamente compuesta por ceros (0 o Falso) para todas las combinaciones.",
+                            "Que la expresión involucre exclusivamente negaciones lógicas.",
+                            "Que tenga al menos un resultado verdadero en la tabla.",
+                            "Que el número de renglones sea impar."
+                        ],
+                        correct: 0,
+                        explanation: "Una contradicción es una proposición compuesta cuyo valor lógico final se evalúa como falso (0) para todas y cada una de las filas posibles de su tabla de verdad."
+                    },
+                    {
+                        q: "Al evaluar la expresión q ∨ (¬r → p) para los valores de las variables p = 0, q = 0, r = 0, ¿qué resultado se obtiene?",
+                        options: [
+                            "Resultado final = 1 (Verdadero)",
+                            "Resultado final = 0 (Falso)",
+                            "No se puede resolver sin x.",
+                            "Es una contradicción directa."
+                        ],
+                        correct: 1,
+                        explanation: "¬r es ¬0 = 1. La implicación ¬r → p es 1 → 0 = 0. Finalmente, q ∨ 0 es 0 ∨ 0 = 0. Por tanto, el resultado es Falso (0)."
+                    }
+                ]
+            }
+        };
+
+        let currentActiveQuizId = 1;
+        let userAnswers = {}; // Almacena respuestas del usuario para el test actual
+
+        function switchQuiz(quizId) {
+            currentActiveQuizId = quizId;
+            
+            // Actualizar diseño de botones de pestañas
+            document.querySelectorAll('.quiz-tab-btn').forEach(btn => {
+                btn.className = "quiz-tab-btn bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 p-4 rounded-2xl shadow-sm text-left border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all";
+            });
+            const activeTab = document.getElementById(`tab-${quizId}`);
+            activeTab.className = "quiz-tab-btn tab-active p-4 rounded-2xl shadow-sm text-left border border-brand-500 transition-all";
+
+            // Limpiar respuestas anteriores
+            userAnswers = {};
+            
+            // Re-renderizar cabeceras de cuestionarios
+            document.getElementById('activeQuizTitle').textContent = quizzes[quizId].title;
+            document.getElementById('activeQuizDesc').textContent = quizzes[quizId].desc;
+
+            // Renderizar las preguntas de forma dinámica
+            renderQuizQuestions(quizId);
+            updateProgressBar();
+        }
+
+        function renderQuizQuestions(quizId) {
+            const container = document.getElementById('quizQuestionsContainer');
+            container.innerHTML = '';
+            document.getElementById('quizResultPanel').classList.add('hidden');
+
+            quizzes[quizId].questions.forEach((qObj, qIndex) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 p-5 rounded-2xl space-y-4 transition-all duration-300";
+                card.id = `q-card-${qIndex}`;
+
+                const qText = document.createElement('h4');
+                qText.className = "font-bold text-sm md:text-base flex items-start gap-2 text-slate-800 dark:text-slate-100";
+                qText.innerHTML = `<span class="bg-brand-100 text-brand-800 dark:bg-brand-900/60 dark:text-brand-300 px-2.5 py-0.5 rounded text-xs font-mono mt-0.5">${qIndex + 1}</span> ${qObj.q}`;
+                card.appendChild(qText);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = "grid grid-cols-1 gap-2.5 pl-7";
+
+                qObj.options.forEach((opt, optIndex) => {
+                    const label = document.createElement('label');
+                    label.className = "flex items-start gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer text-xs md:text-sm hover:border-brand-500 hover:bg-brand-500/5 transition-all";
+                    label.id = `label-${qIndex}-${optIndex}`;
+
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `q-${qIndex}`;
+                    radio.value = optIndex;
+                    radio.className = "h-4 w-4 text-brand-600 border-slate-300 focus:ring-brand-500 mt-0.5";
+                    
+                    radio.addEventListener('change', () => selectAnswer(qIndex, optIndex));
+
+                    label.appendChild(radio);
+                    
+                    const spanText = document.createElement('span');
+                    spanText.textContent = opt;
+                    label.appendChild(spanText);
+
+                    optionsDiv.appendChild(label);
+                });
+
+                card.appendChild(optionsDiv);
+
+                // Caja oculta para dar la retroalimentación al momento de responder
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.id = `feedback-${qIndex}`;
+                feedbackDiv.className = "hidden pl-7 pt-2 text-xs flex gap-2 items-start";
+                card.appendChild(feedbackDiv);
+
+                container.appendChild(card);
+            });
+        }
+
+        function selectAnswer(questionIndex, selectedOptIndex) {
+            userAnswers[questionIndex] = selectedOptIndex;
+            updateProgressBar();
+
+            const qObj = quizzes[currentActiveQuizId].questions[questionIndex];
+            const isCorrect = selectedOptIndex === qObj.correct;
+
+            // Bloquear los demás radios de la misma pregunta para evitar cambios
+            const radios = document.getElementsByName(`q-${questionIndex}`);
+            radios.forEach(r => r.disabled = true);
+
+            // Resaltar la respuesta del alumno
+            const selectedLabel = document.getElementById(`label-${questionIndex}-${selectedOptIndex}`);
+            const feedbackDiv = document.getElementById(`feedback-${questionIndex}`);
+            feedbackDiv.classList.remove('hidden');
+
+            if (isCorrect) {
+                selectedLabel.classList.add('border-emerald-500', 'bg-emerald-500/10', 'text-emerald-800', 'dark:text-emerald-400');
+                feedbackDiv.innerHTML = `
+                    <div class="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 p-3 rounded-xl border border-emerald-500/20 w-full">
+                        <span class="font-bold flex items-center gap-1.5 mb-1 text-sm"><i class="fa-solid fa-circle-check"></i> ¡Respuesta Correcta!</span>
+                        <p class="leading-relaxed text-xs">${qObj.explanation}</p>
+                    </div>`;
+            } else {
+                selectedLabel.classList.add('border-rose-500', 'bg-rose-500/10', 'text-rose-800', 'dark:text-rose-400');
+                // Revelar también la respuesta que era correcta
+                const correctLabel = document.getElementById(`label-${questionIndex}-${qObj.correct}`);
+                correctLabel.classList.add('border-emerald-500/50', 'bg-emerald-500/5', 'text-emerald-700');
+                
+                feedbackDiv.innerHTML = `
+                    <div class="bg-rose-500/10 text-rose-700 dark:text-rose-400 p-3 rounded-xl border border-rose-500/20 w-full">
+                        <span class="font-bold flex items-center gap-1.5 mb-1 text-sm"><i class="fa-solid fa-triangle-exclamation"></i> Respuesta Incorrecta</span>
+                        <p class="leading-relaxed text-xs">${qObj.explanation}</p>
+                    </div>`;
+            }
+
+            checkQuizCompletion();
+        }
+
+        function updateProgressBar() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const progressPercent = (answeredCount / 5) * 100;
+            
+            document.getElementById('quizProgress').textContent = `Respondido: ${answeredCount}/5`;
+            document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
+        }
+
+        function checkQuizCompletion() {
+            const answeredCount = Object.keys(userAnswers).length;
+            if (answeredCount === 5) {
+                let score = 0;
+                quizzes[currentActiveQuizId].questions.forEach((qObj, index) => {
+                    if (userAnswers[index] === qObj.correct) {
+                        score++;
+                    }
+                });
+
+                // Mostrar el panel con la calificación general final
+                setTimeout(() => {
+                    const resultPanel = document.getElementById('quizResultPanel');
+                    resultPanel.classList.remove('hidden');
+                    document.getElementById('finalScore').textContent = score;
+                    resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 400);
+            }
+        }
+
+        function resetActiveQuiz() {
+            switchQuiz(currentActiveQuizId);
+        }
+
+        // Cargar el cuestionario #1 de manera predeterminada al inicializar
+        window.addEventListener('load', () => {
+            switchQuiz(1);
+        });
+
+    </script>
+</body>
+</html>
